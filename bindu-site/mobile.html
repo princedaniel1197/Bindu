@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bindu — Laundry water app prototype</title>
+<meta name="theme-color" content="#9C3A2B">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<link rel="icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIj48cmVjdCB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiIgcng9IjExMiIgZmlsbD0iIzlDM0EyQiIvPjxwYXRoIGQ9Ik0yNTYgMTA4YzYyIDc4IDk2IDEyOCA5NiAxNjhhOTYgOTYgMCAxIDEtMTkyIDBjMC00MCAzNC05MCA5Ni0xNjh6IiBmaWxsPSIjRTlFMUQ1Ii8+PC9zdmc+Cg==">
+<link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIj48cmVjdCB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiIgcng9IjExMiIgZmlsbD0iIzlDM0EyQiIvPjxwYXRoIGQ9Ik0yNTYgMTA4YzYyIDc4IDk2IDEyOCA5NiAxNjhhOTYgOTYgMCAxIDEtMTkyIDBjMC00MCAzNC05MCA5Ni0xNjh6IiBmaWxsPSIjRTlFMUQ1Ii8+PC9zdmc+Cg==">
+<link rel="manifest" href="data:application/manifest+json;base64,eyJuYW1lIjogIkJpbmR1IFx1MjAxNCBXYXRlciBQYXNzYm9vayIsICJzaG9ydF9uYW1lIjogIkJpbmR1IiwgInN0YXJ0X3VybCI6ICIuL2JpbmR1LWFwcC5odG1sIiwgInNjb3BlIjogIi4vIiwgImRpc3BsYXkiOiAic3RhbmRhbG9uZSIsICJiYWNrZ3JvdW5kX2NvbG9yIjogIiNFOUUxRDUiLCAidGhlbWVfY29sb3IiOiAiIzlDM0EyQiIsICJpY29ucyI6IFt7InNyYyI6ICJkYXRhOmltYWdlL3N2Zyt4bWw7YmFzZTY0LFBITjJaeUI0Yld4dWN6MGlhSFIwY0RvdkwzZDNkeTUzTXk1dmNtY3ZNakF3TUM5emRtY2lJSFpwWlhkQ2IzZzlJakFnTUNBMU1USWdOVEV5SWo0OGNtVmpkQ0IzYVdSMGFEMGlOVEV5SWlCb1pXbG5hSFE5SWpVeE1pSWdjbmc5SWpFeE1pSWdabWxzYkQwaUl6bERNMEV5UWlJdlBqeHdZWFJvSUdROUlrMHlOVFlnTVRBNFl6WXlJRGM0SURrMklERXlPQ0E1TmlBeE5qaGhPVFlnT1RZZ01DQXhJREV0TVRreUlEQmpNQzAwTUNBek5DMDVNQ0E1TmkweE5qaDZJaUJtYVd4c1BTSWpSVGxGTVVRMUlpOCtQQzl6ZG1jK0NnPT0iLCAic2l6ZXMiOiAiYW55IiwgInR5cGUiOiAiaW1hZ2Uvc3ZnK3htbCIsICJwdXJwb3NlIjogImFueSJ9LCB7InNyYyI6ICJkYXRhOmltYWdlL3N2Zyt4bWw7YmFzZTY0LFBITjJaeUI0Yld4dWN6MGlhSFIwY0RvdkwzZDNkeTUzTXk1dmNtY3ZNakF3TUM5emRtY2lJSFpwWlhkQ2IzZzlJakFnTUNBMU1USWdOVEV5SWo0OGNtVmpkQ0IzYVdSMGFEMGlOVEV5SWlCb1pXbG5hSFE5SWpVeE1pSWdjbmc5SWpFeE1pSWdabWxzYkQwaUl6bERNMEV5UWlJdlBqeHdZWFJvSUdROUlrMHlOVFlnTVRBNFl6WXlJRGM0SURrMklERXlPQ0E1TmlBeE5qaGhPVFlnT1RZZ01DQXhJREV0TVRreUlEQmpNQzAwTUNBek5DMDVNQ0E1TmkweE5qaDZJaUJtYVd4c1BTSWpSVGxGTVVRMUlpOCtQQzl6ZG1jK0NnPT0iLCAic2l6ZXMiOiAiNTEyeDUxMiIsICJ0eXBlIjogImltYWdlL3N2Zyt4bWwiLCAicHVycG9zZSI6ICJtYXNrYWJsZSJ9XX0=">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..900;1,6..96,400..900&family=Archivo:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --brick:#9C3A2B;
+    --brick-deep:#6B2118;
+    --cream:#E9E1D5;
+    --paper:#FBF7F0;
+    --ink:#241611;
+    --muted:#8A7A6E;
+    --rule:#D9CDBE;
+    --credit:#3F6B4A;
+    --amber:#C08A2E;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{
+    background:var(--cream);
+    color:var(--ink);
+    font-family:'Archivo',system-ui,sans-serif;
+    display:flex;flex-direction:column;align-items:center;
+    padding:32px 16px 48px;gap:22px;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  /* ---------- page furniture ---------- */
+  .stage-head{text-align:center;max-width:420px}
+  .stage-head h1{
+    font-family:'Bodoni Moda',serif;font-style:italic;font-weight:600;
+    font-size:44px;line-height:.95;color:var(--brick);letter-spacing:-.01em;
+  }
+  .stage-head p{
+    margin-top:8px;font-size:12.5px;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--muted);font-weight:600;
+  }
+
+  /* ---------- phone ---------- */
+  .phone{
+    width:378px;max-width:100%;height:748px;
+    background:var(--paper);
+    border:9px solid #1C110D;border-radius:40px;
+    box-shadow:0 26px 60px -18px rgba(60,25,15,.45);
+    overflow:hidden;position:relative;display:flex;flex-direction:column;
+  }
+  .notch{
+    position:absolute;top:0;left:50%;transform:translateX(-50%);
+    width:118px;height:22px;background:#1C110D;border-radius:0 0 14px 14px;z-index:40;
+  }
+
+  .screen{flex:1;overflow-y:auto;display:none;flex-direction:column}
+  .screen.on{display:flex}
+  .pad{padding:0 22px}
+
+  /* ---------- app bar ---------- */
+  .appbar{
+    padding:38px 22px 14px;background:var(--brick);color:var(--cream);
+    flex-shrink:0;
+  }
+  .wordmark{
+    font-family:'Bodoni Moda',serif;font-style:italic;font-weight:600;
+    font-size:28px;line-height:1;
+  }
+  .wordmark span{
+    font-family:'Archivo',sans-serif;font-style:normal;font-weight:600;
+    font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;
+    display:block;margin-top:6px;opacity:.72;
+  }
+
+  /* ---------- balance / cylinder ---------- */
+  .balance{
+    background:var(--brick);color:var(--cream);
+    padding:6px 22px 26px;display:flex;gap:20px;align-items:flex-end;
+    flex-shrink:0;
+  }
+  .balance-main{flex:1}
+  .eyebrow{
+    font-size:9.5px;letter-spacing:.18em;text-transform:uppercase;
+    font-weight:600;opacity:.72;
+  }
+  .big-figure{
+    font-family:'IBM Plex Mono',monospace;font-weight:500;
+    font-size:52px;line-height:1;margin-top:8px;letter-spacing:-.03em;
+  }
+  .big-figure em{font-style:normal;font-size:20px;opacity:.7;margin-left:3px}
+  .sub{font-size:12.5px;opacity:.8;margin-top:9px;line-height:1.45}
+
+  .cylinder{
+    width:36px;height:104px;border:1.5px solid rgba(233,225,213,.55);
+    border-radius:5px 5px 9px 9px;position:relative;overflow:hidden;flex-shrink:0;
+  }
+  .cylinder i{
+    position:absolute;left:0;right:0;bottom:0;
+    background:rgba(233,225,213,.9);
+    transition:height .7s cubic-bezier(.4,0,.2,1);
+  }
+  .cylinder b{
+    position:absolute;left:0;right:0;height:1px;background:rgba(233,225,213,.4);
+  }
+
+  /* ---------- ledger ---------- */
+  .section-label{
+    display:flex;align-items:baseline;justify-content:space-between;
+    padding:24px 22px 10px;
+  }
+  .section-label h2{
+    font-family:'Bodoni Moda',serif;font-style:italic;font-weight:600;
+    font-size:23px;color:var(--brick);
+  }
+  .section-label small{
+    font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;
+    color:var(--muted);font-weight:600;
+  }
+
+  .ledger{width:100%;border-collapse:collapse;font-size:12.5px}
+  .ledger th{
+    font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);
+    font-weight:600;text-align:right;padding:0 22px 7px 0;
+    border-bottom:1px solid var(--rule);
+  }
+  .ledger th:first-child{text-align:left;padding-left:22px}
+  .ledger td{
+    padding:11px 0 11px;border-bottom:1px solid var(--rule);
+    text-align:right;font-family:'IBM Plex Mono',monospace;font-size:12.5px;
+  }
+  .ledger td:first-child{
+    text-align:left;padding-left:22px;font-family:'Archivo',sans-serif;
+  }
+  .ledger td:last-child{padding-right:22px}
+  .ledger .part{font-weight:600;font-size:12.5px}
+  .ledger .date{font-size:10.5px;color:var(--muted);margin-top:2px;letter-spacing:.02em}
+  .cr{color:var(--credit);font-weight:600}
+  .zero{color:var(--muted)}
+  .fresh{animation:slideIn .5s ease}
+  @keyframes slideIn{from{opacity:0;transform:translateY(-7px)}to{opacity:1;transform:none}}
+
+  /* ---------- generic controls ---------- */
+  .field{margin-top:20px}
+  .field > label{
+    font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;
+    color:var(--muted);font-weight:600;display:block;margin-bottom:9px;
+  }
+  .opts{display:flex;gap:8px}
+  .opt{
+    flex:1;border:1.5px solid var(--rule);background:transparent;border-radius:11px;
+    padding:12px 6px;font-family:'Archivo',sans-serif;font-size:12.5px;font-weight:600;
+    color:var(--ink);cursor:pointer;transition:.16s;line-height:1.3;
+  }
+  .opt small{display:block;font-weight:400;font-size:10px;color:var(--muted);margin-top:3px}
+  .opt:hover{border-color:var(--brick)}
+  .opt[aria-pressed="true"]{background:var(--brick);border-color:var(--brick);color:var(--cream)}
+  .opt[aria-pressed="true"] small{color:rgba(233,225,213,.75)}
+  .opt:focus-visible,button:focus-visible{outline:2.5px solid var(--brick-deep);outline-offset:2px}
+
+  /* ---------- cycle recommendation ---------- */
+  .rec{
+    margin-top:26px;border:1.5px solid var(--rule);border-radius:15px;overflow:hidden;
+  }
+  .rec-head{
+    display:flex;align-items:center;gap:9px;padding:13px 15px;
+    border-bottom:1.5px solid var(--rule);
+  }
+  .lamp{width:11px;height:11px;border-radius:50%;flex-shrink:0}
+  .rec-head strong{font-size:10px;letter-spacing:.15em;text-transform:uppercase}
+  .rec-head span{margin-left:auto;font-size:11px;color:var(--muted)}
+
+  .choice{
+    display:flex;gap:12px;align-items:flex-start;padding:14px 15px;
+    cursor:pointer;border-bottom:1px solid var(--rule);transition:.16s;
+  }
+  .choice:last-child{border-bottom:none}
+  .choice:hover{background:rgba(156,58,43,.045)}
+  .radio{
+    width:17px;height:17px;border-radius:50%;border:1.5px solid var(--muted);
+    flex-shrink:0;margin-top:2px;position:relative;transition:.16s;
+  }
+  .choice[aria-checked="true"] .radio{border-color:var(--brick);border-width:5px}
+  .choice[aria-checked="true"]{background:rgba(156,58,43,.06)}
+  .choice-body{flex:1}
+  .choice-body b{font-size:13.5px;display:block}
+  .choice-body p{font-size:11.5px;color:var(--muted);margin-top:3px;line-height:1.45}
+  .litres{
+    font-family:'IBM Plex Mono',monospace;font-size:15px;font-weight:500;
+    text-align:right;flex-shrink:0;
+  }
+  .litres em{font-style:normal;font-size:10px;color:var(--muted);display:block;margin-top:2px}
+  .default-tag{
+    display:inline-block;font-size:8.5px;letter-spacing:.13em;text-transform:uppercase;
+    background:var(--brick);color:var(--cream);padding:2.5px 6px;border-radius:4px;
+    margin-left:6px;vertical-align:1.5px;font-weight:600;
+  }
+
+  .cta{
+    width:100%;background:var(--brick);color:var(--cream);border:none;
+    border-radius:13px;padding:16px;font-family:'Archivo',sans-serif;
+    font-size:13.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+    cursor:pointer;margin-top:24px;transition:.16s;
+  }
+  .cta:hover{background:var(--brick-deep)}
+  .cta.ghost{
+    background:transparent;color:var(--brick);border:1.5px solid var(--rule);margin-top:10px;
+  }
+  .cta.ghost:hover{border-color:var(--brick);background:transparent}
+
+  /* ---------- receipt ---------- */
+  .receipt{padding:40px 22px 0;text-align:center;flex:1;display:flex;flex-direction:column}
+  .receipt .drop{
+    font-family:'Bodoni Moda',serif;font-style:italic;font-size:76px;
+    color:var(--brick);line-height:1;
+  }
+  .receipt h3{
+    font-family:'Bodoni Moda',serif;font-style:italic;font-weight:600;
+    font-size:29px;color:var(--brick);margin-top:6px;
+  }
+  .receipt .line{
+    display:flex;justify-content:space-between;align-items:baseline;
+    padding:13px 0;border-bottom:1px solid var(--rule);font-size:12.5px;text-align:left;
+  }
+  .receipt .line:first-of-type{border-top:1px solid var(--rule);margin-top:26px}
+  .receipt .line span:last-child{font-family:'IBM Plex Mono',monospace;font-weight:500}
+  .receipt .line.total span{color:var(--credit);font-weight:700;font-size:14px}
+  .receipt .note{
+    font-size:11.5px;color:var(--muted);margin-top:18px;line-height:1.55;text-align:left;
+  }
+
+  /* ---------- rewards ---------- */
+  .tier{
+    border:1.5px solid var(--rule);border-radius:13px;padding:15px;
+    margin-top:11px;display:flex;gap:13px;align-items:center;
+  }
+  .tier.locked{opacity:.5}
+  .tier-fig{
+    font-family:'IBM Plex Mono',monospace;font-size:17px;font-weight:600;
+    color:var(--brick);flex-shrink:0;width:56px;
+  }
+  .tier-fig em{font-style:normal;display:block;font-size:8.5px;color:var(--muted);
+    letter-spacing:.14em;text-transform:uppercase;margin-top:2px;font-family:'Archivo',sans-serif}
+  .tier b{font-size:13px;display:block}
+  .tier p{font-size:11.5px;color:var(--muted);margin-top:2px;line-height:1.4}
+  .tier button{
+    margin-left:auto;background:var(--brick);color:var(--cream);border:none;
+    border-radius:8px;padding:8px 13px;font-family:'Archivo',sans-serif;
+    font-size:10.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;
+  }
+  .tier button:disabled{background:var(--rule);color:var(--muted);cursor:not-allowed}
+
+  /* ---------- tab bar ---------- */
+  .tabs{
+    display:flex;border-top:1.5px solid var(--rule);background:var(--paper);
+    flex-shrink:0;padding-bottom:14px;
+  }
+  .tab{
+    flex:1;background:none;border:none;padding:14px 0 10px;cursor:pointer;
+    font-family:'Archivo',sans-serif;font-size:9.5px;font-weight:600;
+    letter-spacing:.13em;text-transform:uppercase;color:var(--muted);
+    border-top:2.5px solid transparent;margin-top:-1.5px;transition:.16s;
+  }
+  .tab[aria-selected="true"]{color:var(--brick);border-top-color:var(--brick)}
+
+  .foot{
+    max-width:378px;font-size:11.5px;color:var(--muted);text-align:center;line-height:1.6;
+  }
+  @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+
+<div class="stage-head">
+  <h1>Bindu</h1>
+  <p>Group 7 · Prototype</p>
+</div>
+
+<div class="phone">
+  <div class="notch"></div>
+
+  <!-- ================= HOME / PASSBOOK ================= -->
+  <section class="screen on" id="s-home">
+    <div class="appbar">
+      <div class="wordmark">Bindu<span>Water passbook</span></div>
+    </div>
+
+    <div class="balance">
+      <div class="balance-main">
+        <div class="eyebrow">Saved this month</div>
+        <div class="big-figure" id="monthSaved">84<em>L</em></div>
+        <div class="sub">That's <b id="ptsInline">312</b> points in your balance.<br>Enough for a free wash &amp; fold.</div>
+      </div>
+      <div class="cylinder" aria-hidden="true">
+        <b style="bottom:25%"></b><b style="bottom:50%"></b><b style="bottom:75%"></b>
+        <i id="cylFill" style="height:42%"></i>
+      </div>
+    </div>
+
+    <div class="section-label">
+      <h2>Passbook</h2><small>Litres</small>
+    </div>
+
+    <table class="ledger">
+      <thead>
+        <tr><th>Particulars</th><th>Used</th><th>Saved</th></tr>
+      </thead>
+      <tbody id="ledgerBody">
+        <tr>
+          <td><div class="part">Medium load · Water Saver</div><div class="date">08 Aug · Jayanagar</div></td>
+          <td>32</td><td class="cr">+13</td>
+        </tr>
+        <tr>
+          <td><div class="part">Small load · Standard</div><div class="date">05 Aug · Jayanagar</div></td>
+          <td>30</td><td class="zero">—</td>
+        </tr>
+        <tr>
+          <td><div class="part">Large load · Water Saver</div><div class="date">30 Jul · Jayanagar</div></td>
+          <td>43</td><td class="cr">+17</td>
+        </tr>
+        <tr>
+          <td><div class="part">Medium load · Water Saver</div><div class="date">26 Jul · Jayanagar</div></td>
+          <td>32</td><td class="cr">+13</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="pad"><button class="cta" onclick="go('wash')">Start a wash</button></div>
+    <div style="height:26px"></div>
+  </section>
+
+  <!-- ================= NEW WASH ================= -->
+  <section class="screen" id="s-wash">
+    <div class="appbar">
+      <div class="wordmark">New wash<span>Jayanagar 4th Block</span></div>
+    </div>
+
+    <div class="pad" style="padding-top:6px">
+      <div class="field">
+        <label for="loadRow">Load size</label>
+        <div class="opts" id="loadRow">
+          <button class="opt" data-g="load" data-v="small" onclick="pick(this)">Small<small>1–3 kg</small></button>
+          <button class="opt" data-g="load" data-v="medium" aria-pressed="true" onclick="pick(this)">Medium<small>4–6 kg</small></button>
+          <button class="opt" data-g="load" data-v="large" onclick="pick(this)">Large<small>7–9 kg</small></button>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="fabRow">Fabric</label>
+        <div class="opts" id="fabRow">
+          <button class="opt" data-g="fabric" data-v="delicate" onclick="pick(this)">Delicate<small>Silk, wool</small></button>
+          <button class="opt" data-g="fabric" data-v="cotton" aria-pressed="true" onclick="pick(this)">Cotton<small>Everyday</small></button>
+          <button class="opt" data-g="fabric" data-v="mixed" onclick="pick(this)">Mixed<small>Assorted</small></button>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="soilRow">How dirty</label>
+        <div class="opts" id="soilRow">
+          <button class="opt" data-g="soil" data-v="light" aria-pressed="true" onclick="pick(this)">Light<small>Worn once</small></button>
+          <button class="opt" data-g="soil" data-v="normal" onclick="pick(this)">Normal<small>Regular</small></button>
+          <button class="opt" data-g="soil" data-v="heavy" onclick="pick(this)">Heavy<small>Stains, mud</small></button>
+        </div>
+      </div>
+
+      <div class="rec">
+        <div class="rec-head">
+          <span class="lamp" id="lamp"></span>
+          <strong id="lampText">Low water need</strong>
+          <span id="recNote">Based on your choices</span>
+        </div>
+
+        <div class="choice" role="radio" aria-checked="true" tabindex="0" id="ch-eco"
+             onclick="setCycle('eco')" onkeydown="keyPick(event,'eco')">
+          <div class="radio"></div>
+          <div class="choice-body">
+            <b>Water Saver<span class="default-tag">Default</span></b>
+            <p>Longer spin, less fill. Same wash result for this load.</p>
+          </div>
+          <div class="litres" id="ecoL">32<em>litres</em></div>
+        </div>
+
+        <div class="choice" role="radio" aria-checked="false" tabindex="0" id="ch-std"
+             onclick="setCycle('std')" onkeydown="keyPick(event,'std')">
+          <div class="radio"></div>
+          <div class="choice-body">
+            <b>Standard</b>
+            <p id="stdWarn">Uses 13 L more. Choose this only if clothes need a deeper rinse.</p>
+          </div>
+          <div class="litres" id="stdL">45<em>litres</em></div>
+        </div>
+      </div>
+
+      <button class="cta" onclick="runWash()">Confirm and start</button>
+      <button class="cta ghost" onclick="go('home')">Back to passbook</button>
+      <div style="height:26px"></div>
+    </div>
+  </section>
+
+  <!-- ================= RECEIPT ================= -->
+  <section class="screen" id="s-done">
+    <div class="receipt">
+      <div class="drop">◠</div>
+      <h3>Wash complete</h3>
+
+      <div class="line"><span>Cycle</span><span id="rCycle">Water Saver</span></div>
+      <div class="line"><span>Water used</span><span id="rUsed">32 L</span></div>
+      <div class="line"><span>A standard cycle would use</span><span id="rStd">45 L</span></div>
+      <div class="line total"><span id="rSavedLabel">Saved</span><span id="rSaved">13 L</span></div>
+      <div class="line"><span>Points credited</span><span id="rPts">+13</span></div>
+
+      <p class="note" id="rNote">Your passbook has been updated. Points can be spent on your next visit.</p>
+
+      <div style="flex:1"></div>
+      <button class="cta" onclick="go('home')" style="margin-bottom:14px">View passbook</button>
+    </div>
+  </section>
+
+  <!-- ================= REWARDS ================= -->
+  <section class="screen" id="s-rewards">
+    <div class="appbar">
+      <div class="wordmark">Rewards<span>Spend your points</span></div>
+    </div>
+
+    <div class="balance">
+      <div class="balance-main">
+        <div class="eyebrow">Points balance</div>
+        <div class="big-figure" id="ptsBig">312</div>
+        <div class="sub">One point for every litre you save.</div>
+      </div>
+    </div>
+
+    <div class="pad" style="padding-top:20px">
+      <div class="tier" id="t1">
+        <div class="tier-fig">150<em>points</em></div>
+        <div><b>₹40 off a wash</b><p>Applied at the counter</p></div>
+        <button onclick="redeem(150,this)">Redeem</button>
+      </div>
+      <div class="tier" id="t2">
+        <div class="tier-fig">300<em>points</em></div>
+        <div><b>Free wash &amp; fold</b><p>Up to 3 kg</p></div>
+        <button onclick="redeem(300,this)">Redeem</button>
+      </div>
+      <div class="tier locked" id="t3">
+        <div class="tier-fig">750<em>points</em></div>
+        <div><b>Free pickup for a month</b><p>Within 5 km</p></div>
+        <button disabled>Locked</button>
+      </div>
+      <div style="height:26px"></div>
+    </div>
+  </section>
+
+  <!-- ================= TABS ================= -->
+  <nav class="tabs">
+    <button class="tab" aria-selected="true" data-t="home" onclick="go('home')">Passbook</button>
+    <button class="tab" aria-selected="false" data-t="wash" onclick="go('wash')">Wash</button>
+    <button class="tab" aria-selected="false" data-t="rewards" onclick="go('rewards')">Rewards</button>
+  </nav>
+</div>
+
+<p class="foot">Working prototype — change the load, fabric and soil level to see the recommendation update, then run a wash.</p>
+
+<script>
+/* ---------- state ---------- */
+const BASE = {small:30, medium:45, large:60};
+const SOIL = {light:.88, normal:1, heavy:1.15};
+const FAB  = {delicate:.85, cotton:1, mixed:1};
+const SAVER = .72;               // Water Saver draws ~72% of a standard fill
+
+let sel = {load:'medium', fabric:'cotton', soil:'light'};
+let cycle = 'eco';               // eco is the pre-selected default, every time
+let points = 312, monthSaved = 84;
+
+/* ---------- navigation ---------- */
+function go(name){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('on'));
+  document.getElementById('s'+'-'+name).classList.add('on');
+  document.querySelectorAll('.tab').forEach(t=>
+    t.setAttribute('aria-selected', t.dataset.t===name));
+  if(name==='wash'){ cycle='eco'; render(); }   // default resets on every new wash
+  document.querySelector('.screen.on').scrollTop = 0;
+}
+
+/* ---------- wash builder ---------- */
+function pick(btn){
+  const g = btn.dataset.g;
+  document.querySelectorAll('[data-g="'+g+'"]').forEach(b=>b.setAttribute('aria-pressed','false'));
+  btn.setAttribute('aria-pressed','true');
+  sel[g] = btn.dataset.v;
+  render();
+}
+
+function setCycle(c){ cycle = c; render(); }
+function keyPick(e,c){
+  if(e.key===' '||e.key==='Enter'){ e.preventDefault(); setCycle(c); }
+}
+
+function figures(){
+  const std = Math.round(BASE[sel.load] * SOIL[sel.soil] * FAB[sel.fabric]);
+  const eco = Math.round(std * SAVER);
+  return {std, eco, saved: std - eco};
+}
+
+function render(){
+  const f = figures();
+  document.getElementById('ecoL').innerHTML = f.eco + '<em>litres</em>';
+  document.getElementById('stdL').innerHTML = f.std + '<em>litres</em>';
+  document.getElementById('stdWarn').textContent =
+    'Uses ' + f.saved + ' L more. Choose this only if clothes need a deeper rinse.';
+
+  document.getElementById('ch-eco').setAttribute('aria-checked', cycle==='eco');
+  document.getElementById('ch-std').setAttribute('aria-checked', cycle==='std');
+
+  // traffic light — carried over from the staff-facing SCAMPER idea
+  const lamp = document.getElementById('lamp');
+  const text = document.getElementById('lampText');
+  const map = {
+    light:  ['var(--credit)', 'Low water need'],
+    normal: ['var(--amber)',  'Medium water need'],
+    heavy:  ['var(--brick)',  'High water need']
+  }[sel.soil];
+  lamp.style.background = map[0];
+  text.textContent = map[1];
+  text.style.color = map[0];
+}
+
+/* ---------- run a wash ---------- */
+function runWash(){
+  const f = figures();
+  const chose = cycle==='eco';
+  const used = chose ? f.eco : f.std;
+  const saved = chose ? f.saved : 0;
+
+  document.getElementById('rCycle').textContent = chose ? 'Water Saver' : 'Standard';
+  document.getElementById('rUsed').textContent  = used + ' L';
+  document.getElementById('rStd').textContent   = f.std + ' L';
+  document.getElementById('rSaved').textContent = saved + ' L';
+  document.getElementById('rPts').textContent   = '+' + saved;
+  document.getElementById('rSavedLabel').textContent = chose ? 'Saved' : 'Saved nothing this time';
+  document.getElementById('rNote').textContent = chose
+    ? 'Your passbook has been updated. Points can be spent on your next visit.'
+    : 'No points this time. The Water Saver cycle would have saved ' + f.saved + ' L on this load.';
+
+  points += saved; monthSaved += saved;
+
+  const label = sel.load[0].toUpperCase()+sel.load.slice(1) + ' load · ' + (chose?'Water Saver':'Standard');
+  const row = document.createElement('tr');
+  row.className = 'fresh';
+  row.innerHTML =
+    '<td><div class="part">'+label+'</div><div class="date">Today · Jayanagar</div></td>' +
+    '<td>'+used+'</td>' +
+    '<td class="'+(saved?'cr':'zero')+'">'+(saved?'+'+saved:'—')+'</td>';
+  const body = document.getElementById('ledgerBody');
+  body.insertBefore(row, body.firstChild);
+
+  sync();
+  go('done');
+}
+
+function sync(){
+  document.getElementById('monthSaved').innerHTML = monthSaved + '<em>L</em>';
+  document.getElementById('ptsInline').textContent = points;
+  document.getElementById('ptsBig').textContent = points;
+  document.getElementById('cylFill').style.height = Math.min(100, monthSaved/2) + '%';
+  document.getElementById('t3').classList.toggle('locked', points < 750);
+  document.querySelector('#t3 button').disabled = points < 750;
+  document.querySelector('#t3 button').textContent = points < 750 ? 'Locked' : 'Redeem';
+}
+
+function redeem(cost, btn){
+  if(points < cost){ btn.textContent='Not enough'; setTimeout(()=>btn.textContent='Redeem',1400); return; }
+  points -= cost; sync();
+  btn.textContent = 'Redeemed'; btn.disabled = true;
+}
+
+render(); sync();
+</script>
+</body>
+</html>

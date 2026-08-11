@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bindu — Water Passbook</title>
+<meta name="theme-color" content="#9C3A2B">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..900;1,6..96,400..900&family=Archivo:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --brick:#9C3A2B; --brick-deep:#6B2118; --brick-soft:#B4523F;
+    --cream:#E9E1D5; --paper:#FBF7F0; --ink:#241611;
+    --muted:#8A7A6E; --rule:#DDD2C4; --credit:#3F6B4A; --amber:#C08A2E;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{
+    background:var(--cream); color:var(--ink);
+    font-family:'Archivo',system-ui,sans-serif;
+    -webkit-font-smoothing:antialiased;
+    display:flex; min-height:100vh;
+  }
+  ::selection{background:var(--brick);color:var(--cream)}
+
+  /* ============ SIDEBAR ============ */
+  .side{
+    width:252px; flex-shrink:0; background:var(--brick); color:var(--cream);
+    display:flex; flex-direction:column; padding:34px 26px 26px;
+    position:sticky; top:0; height:100vh;
+  }
+  .mark{font-family:'Bodoni Moda',serif;font-style:italic;font-weight:600;font-size:42px;line-height:.9}
+  .mark small{
+    display:block;font-family:'Archivo',sans-serif;font-style:normal;font-weight:600;
+    font-size:9.5px;letter-spacing:.22em;text-transform:uppercase;opacity:.7;margin-top:9px;
+  }
+  .nav{margin-top:52px;display:flex;flex-direction:column;gap:2px}
+  .nav button{
+    background:none;border:none;color:var(--cream);text-align:left;cursor:pointer;
+    font-family:'Archivo',sans-serif;font-size:13.5px;font-weight:600;
+    padding:11px 13px;border-radius:9px;opacity:.68;transition:.16s;
+    display:flex;align-items:center;gap:11px;
+  }
+  .nav button:hover{opacity:1;background:rgba(233,225,213,.09)}
+  .nav button[aria-current="page"]{opacity:1;background:rgba(233,225,213,.15)}
+  .nav .num{
+    font-family:'IBM Plex Mono',monospace;font-size:10px;opacity:.6;font-weight:400;
+  }
+  .side-foot{
+    margin-top:auto;font-size:11px;line-height:1.6;opacity:.6;
+    border-top:1px solid rgba(233,225,213,.2);padding-top:16px;
+  }
+  .side-foot b{display:block;font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;
+    opacity:.85;margin-bottom:5px;font-weight:600}
+
+  /* ============ MAIN ============ */
+  .main{flex:1;min-width:0;display:flex;flex-direction:column}
+  .topbar{
+    padding:26px 46px;border-bottom:1px solid var(--rule);
+    display:flex;align-items:baseline;gap:16px;background:var(--paper);
+  }
+  .topbar h1{
+    font-family:'Bodoni Moda',serif;font-style:italic;font-weight:600;
+    font-size:31px;color:var(--brick);line-height:1;
+  }
+  .topbar .loc{
+    margin-left:auto;font-size:11.5px;color:var(--muted);
+    display:flex;align-items:center;gap:8px;
+  }
+  .topbar .loc i{width:6px;height:6px;border-radius:50%;background:var(--credit);font-style:normal}
+
+  .view{display:none;padding:38px 46px 60px;background:var(--paper);flex:1}
+  .view.on{display:block}
+  .wrap{max-width:1080px}
+
+  /* ============ PASSBOOK ============ */
+  .grid{display:grid;grid-template-columns:340px 1fr;gap:34px;align-items:start}
+
+  .balance-card{
+    background:var(--brick);color:var(--cream);border-radius:16px;
+    padding:28px 28px 30px;display:flex;gap:24px;align-items:flex-end;
+  }
+  .balance-card .col{flex:1;min-width:0}
+  .eyebrow{font-size:9.5px;letter-spacing:.18em;text-transform:uppercase;font-weight:600;opacity:.72}
+  .figure{
+    font-family:'IBM Plex Mono',monospace;font-weight:500;font-size:62px;
+    line-height:1;letter-spacing:-.035em;margin-top:12px;
+  }
+  .figure em{font-style:normal;font-size:22px;opacity:.68;margin-left:4px}
+  .sub{font-size:12.5px;opacity:.82;margin-top:14px;line-height:1.55}
+  .sub b{font-weight:700}
+
+  .cyl{
+    width:44px;height:132px;border:1.5px solid rgba(233,225,213,.5);
+    border-radius:6px 6px 11px 11px;position:relative;overflow:hidden;flex-shrink:0;
+  }
+  .cyl i{position:absolute;left:0;right:0;bottom:0;background:rgba(233,225,213,.9);
+    transition:height .75s cubic-bezier(.4,0,.2,1)}
+  .cyl b{position:absolute;left:0;right:0;height:1px;background:rgba(233,225,213,.35)}
+
+  .stat-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px}
+  .stat{border:1px solid var(--rule);border-radius:12px;padding:16px 17px}
+  .stat .n{font-family:'IBM Plex Mono',monospace;font-size:26px;font-weight:500;
+    color:var(--brick);letter-spacing:-.02em}
+  .stat .l{font-size:10px;letter-spacing:.13em;text-transform:uppercase;
+    color:var(--muted);font-weight:600;margin-top:6px}
+
+  .panel-head{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:14px}
+  .panel-head h2{font-family:'Bodoni Moda',serif;font-style:italic;font-weight:600;
+    font-size:26px;color:var(--brick)}
+  .panel-head small{font-size:9.5px;letter-spacing:.15em;text-transform:uppercase;
+    color:var(--muted);font-weight:600}
+
+  table.led{width:100%;border-collapse:collapse}
+  table.led th{
+    font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);
+    font-weight:600;text-align:right;padding-bottom:9px;border-bottom:1.5px solid var(--rule);
+  }
+  table.led th:first-child{text-align:left}
+  table.led td{
+    padding:14px 0;border-bottom:1px solid var(--rule);text-align:right;
+    font-family:'IBM Plex Mono',monospace;font-size:13.5px;
+  }
+  table.led td:first-child{text-align:left;font-family:'Archivo',sans-serif}
+  .part{font-weight:600;font-size:13.5px}
+  .date{font-size:11px;color:var(--muted);margin-top:3px}
+  .cr{color:var(--credit);font-weight:600}
+  .zero{color:var(--muted)}
+  .bal{color:var(--muted)}
+  .fresh{animation:sl .5s ease}
+  @keyframes sl{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:none}}
+
+  /* ============ WASH ============ */
+  .cols3{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+  .fieldset > legend, .flabel{
+    font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);
+    font-weight:600;margin-bottom:11px;display:block;
+  }
+  .opt{
+    width:100%;display:block;border:1.5px solid var(--rule);background:transparent;
+    border-radius:11px;padding:13px 15px;margin-bottom:8px;cursor:pointer;
+    font-family:'Archivo',sans-serif;font-size:13.5px;font-weight:600;color:var(--ink);
+    text-align:left;transition:.16s;
+  }
+  .opt small{display:block;font-weight:400;font-size:11px;color:var(--muted);margin-top:3px}
+  .opt:hover{border-color:var(--brick-soft)}
+  .opt[aria-pressed="true"]{background:var(--brick);border-color:var(--brick);color:var(--cream)}
+  .opt[aria-pressed="true"] small{color:rgba(233,225,213,.75)}
+  :focus-visible{outline:2.5px solid var(--brick-deep);outline-offset:2px}
+
+  .lamp-row{
+    display:flex;align-items:center;gap:11px;margin:34px 0 14px;
+    padding:13px 18px;border:1.5px solid var(--rule);border-radius:11px;
+  }
+  .lamp{width:12px;height:12px;border-radius:50%;flex-shrink:0}
+  .lamp-row strong{font-size:10.5px;letter-spacing:.15em;text-transform:uppercase}
+  .lamp-row span{margin-left:auto;font-size:12px;color:var(--muted)}
+
+  .cycles{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  .cyc{
+    border:1.5px solid var(--rule);border-radius:14px;padding:22px;cursor:pointer;
+    transition:.16s;position:relative;text-align:left;background:transparent;
+    font-family:'Archivo',sans-serif;
+  }
+  .cyc:hover{border-color:var(--brick-soft)}
+  .cyc[aria-checked="true"]{border-color:var(--brick);border-width:2.5px;padding:21px;
+    background:rgba(156,58,43,.05)}
+  .cyc .tag{
+    position:absolute;top:-9px;left:20px;background:var(--brick);color:var(--cream);
+    font-size:8.5px;letter-spacing:.14em;text-transform:uppercase;font-weight:600;
+    padding:3px 8px;border-radius:4px;
+  }
+  .cyc h3{font-size:17px;font-weight:700}
+  .cyc p{font-size:12.5px;color:var(--muted);margin-top:6px;line-height:1.5;min-height:38px}
+  .cyc .big{
+    font-family:'IBM Plex Mono',monospace;font-size:38px;font-weight:500;
+    letter-spacing:-.03em;margin-top:14px;color:var(--brick);
+  }
+  .cyc .big em{font-style:normal;font-size:13px;color:var(--muted);margin-left:5px}
+
+  .cta{
+    background:var(--brick);color:var(--cream);border:none;border-radius:12px;
+    padding:16px 34px;font-family:'Archivo',sans-serif;font-size:13px;font-weight:700;
+    letter-spacing:.08em;text-transform:uppercase;cursor:pointer;transition:.16s;margin-top:26px;
+  }
+  .cta:hover{background:var(--brick-deep)}
+  .cta.ghost{background:transparent;color:var(--brick);border:1.5px solid var(--rule);margin-left:10px}
+  .cta.ghost:hover{border-color:var(--brick);background:transparent}
+
+  /* ============ RECEIPT ============ */
+  .receipt{max-width:460px;margin:20px auto;text-align:center}
+  .receipt .drop{
+    width:56px;height:56px;margin:0 auto 6px;border-radius:50%;
+    background:var(--brick);display:flex;align-items:center;justify-content:center;
+  }
+  .receipt .drop:after{
+    content:'';width:19px;height:19px;background:var(--cream);
+    border-radius:0 50% 50% 50%;transform:rotate(-135deg);
+  }
+  .receipt h2{font-family:'Bodoni Moda',serif;font-style:italic;font-weight:600;
+    font-size:35px;color:var(--brick);margin-top:12px}
+  .rline{display:flex;justify-content:space-between;align-items:baseline;
+    padding:15px 0;border-bottom:1px solid var(--rule);font-size:13px;text-align:left}
+  .rline:first-of-type{border-top:1px solid var(--rule);margin-top:28px}
+  .rline span:last-child{font-family:'IBM Plex Mono',monospace;font-weight:500;font-size:14px}
+  .rline.total span{color:var(--credit);font-weight:700;font-size:16px}
+  .rnote{font-size:12px;color:var(--muted);margin-top:20px;line-height:1.6;text-align:left}
+
+  /* ============ REWARDS ============ */
+  .tiers{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:26px}
+  .tier{border:1.5px solid var(--rule);border-radius:14px;padding:24px;display:flex;
+    flex-direction:column;transition:.16s}
+  .tier.locked{opacity:.45}
+  .tier .n{font-family:'IBM Plex Mono',monospace;font-size:34px;font-weight:600;
+    color:var(--brick);letter-spacing:-.02em}
+  .tier .u{font-size:9px;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);
+    font-weight:600;margin-top:3px}
+  .tier h3{font-size:16px;font-weight:700;margin-top:18px}
+  .tier p{font-size:12px;color:var(--muted);margin-top:5px;line-height:1.5;flex:1}
+  .tier button{
+    margin-top:18px;background:var(--brick);color:var(--cream);border:none;border-radius:9px;
+    padding:11px;font-family:'Archivo',sans-serif;font-size:10.5px;font-weight:700;
+    letter-spacing:.09em;text-transform:uppercase;cursor:pointer;
+  }
+  .tier button:hover:not(:disabled){background:var(--brick-deep)}
+  .tier button:disabled{background:var(--rule);color:var(--muted);cursor:not-allowed}
+
+  @media (max-width:980px){
+    body{flex-direction:column}
+    .side{width:100%;height:auto;position:static;flex-direction:row;align-items:center;
+      padding:18px 24px;gap:24px}
+    .mark{font-size:26px}.mark small{display:none}
+    .nav{margin:0 0 0 auto;flex-direction:row;gap:4px}
+    .nav .num{display:none}
+    .side-foot{display:none}
+    .grid,.cols3,.cycles,.tiers{grid-template-columns:1fr}
+    .view,.topbar{padding-left:24px;padding-right:24px}
+  }
+  @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+
+<!-- ============ SIDEBAR ============ -->
+<aside class="side">
+  <div class="mark">Bindu<small>Water Passbook</small></div>
+  <nav class="nav">
+    <button aria-current="page" data-t="home" onclick="go('home')"><span class="num">01</span>Passbook</button>
+    <button data-t="wash" onclick="go('wash')"><span class="num">02</span>New wash</button>
+    <button data-t="rewards" onclick="go('rewards')"><span class="num">03</span>Rewards</button>
+  </nav>
+  <div class="side-foot">
+    <b>Group 7 · Prototype</b>
+    Every wash is a transaction. Water you save is credited back to you.
+  </div>
+</aside>
+
+<!-- ============ MAIN ============ -->
+<div class="main">
+  <header class="topbar">
+    <h1 id="viewTitle">Passbook</h1>
+    <div class="loc"><i></i> Jayanagar 4th Block · Bengaluru</div>
+  </header>
+
+  <!-- ---- PASSBOOK ---- -->
+  <section class="view on" id="v-home">
+   <div class="wrap">
+    <div class="grid">
+      <div>
+        <div class="balance-card">
+          <div class="col">
+            <div class="eyebrow">Saved this month</div>
+            <div class="figure" id="monthSaved">84<em>L</em></div>
+            <div class="sub">That's <b id="ptsInline">312</b> points in your balance — enough for a free wash &amp; fold.</div>
+          </div>
+          <div class="cyl" aria-hidden="true">
+            <b style="bottom:25%"></b><b style="bottom:50%"></b><b style="bottom:75%"></b>
+            <i id="cylFill" style="height:42%"></i>
+          </div>
+        </div>
+        <div class="stat-row">
+          <div class="stat"><div class="n" id="sWashes">4</div><div class="l">Washes</div></div>
+          <div class="stat"><div class="n" id="sRate">76%</div><div class="l">On Water Saver</div></div>
+        </div>
+        <button class="cta" onclick="go('wash')" style="width:100%">Start a wash</button>
+      </div>
+
+      <div>
+        <div class="panel-head">
+          <h2>Statement</h2><small>Litres · August</small>
+        </div>
+        <table class="led">
+          <thead>
+            <tr><th>Particulars</th><th>Used</th><th>Saved</th><th>Balance</th></tr>
+          </thead>
+          <tbody id="ledgerBody">
+            <tr><td><div class="part">Medium load · Water Saver</div><div class="date">08 Aug</div></td>
+                <td>32</td><td class="cr">+13</td><td class="bal">84</td></tr>
+            <tr><td><div class="part">Small load · Standard</div><div class="date">05 Aug</div></td>
+                <td>30</td><td class="zero">—</td><td class="bal">71</td></tr>
+            <tr><td><div class="part">Large load · Water Saver</div><div class="date">30 Jul</div></td>
+                <td>43</td><td class="cr">+17</td><td class="bal">71</td></tr>
+            <tr><td><div class="part">Medium load · Water Saver</div><div class="date">26 Jul</div></td>
+                <td>32</td><td class="cr">+13</td><td class="bal">54</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+   </div>
+  </section>
+
+  <!-- ---- NEW WASH ---- -->
+  <section class="view" id="v-wash">
+   <div class="wrap">
+    <div class="cols3">
+      <div>
+        <span class="flabel">Load size</span>
+        <button class="opt" data-g="load" data-v="small" onclick="pick(this)">Small<small>1–3 kg</small></button>
+        <button class="opt" data-g="load" data-v="medium" aria-pressed="true" onclick="pick(this)">Medium<small>4–6 kg</small></button>
+        <button class="opt" data-g="load" data-v="large" onclick="pick(this)">Large<small>7–9 kg</small></button>
+      </div>
+      <div>
+        <span class="flabel">Fabric</span>
+        <button class="opt" data-g="fabric" data-v="delicate" onclick="pick(this)">Delicate<small>Silk, wool</small></button>
+        <button class="opt" data-g="fabric" data-v="cotton" aria-pressed="true" onclick="pick(this)">Cotton<small>Everyday wear</small></button>
+        <button class="opt" data-g="fabric" data-v="mixed" onclick="pick(this)">Mixed<small>Assorted load</small></button>
+      </div>
+      <div>
+        <span class="flabel">How dirty</span>
+        <button class="opt" data-g="soil" data-v="light" aria-pressed="true" onclick="pick(this)">Light<small>Worn once or twice</small></button>
+        <button class="opt" data-g="soil" data-v="normal" onclick="pick(this)">Normal<small>Regular use</small></button>
+        <button class="opt" data-g="soil" data-v="heavy" onclick="pick(this)">Heavy<small>Stains, mud, oil</small></button>
+      </div>
+    </div>
+
+    <div class="lamp-row">
+      <span class="lamp" id="lamp"></span>
+      <strong id="lampText">Low water need</strong>
+      <span>Assessed from load size, fabric and soil level</span>
+    </div>
+
+    <div class="cycles">
+      <button class="cyc" role="radio" aria-checked="true" id="c-eco" onclick="setCycle('eco')">
+        <span class="tag">Default</span>
+        <h3>Water Saver</h3>
+        <p>Lower fill, longer spin. Same result on a load like this one.</p>
+        <div class="big" id="ecoL">32<em>litres</em></div>
+      </button>
+      <button class="cyc" role="radio" aria-checked="false" id="c-std" onclick="setCycle('std')">
+        <h3>Standard</h3>
+        <p id="stdWarn">Uses 13 L more. Worth it only when clothes need a deeper rinse.</p>
+        <div class="big" id="stdL">45<em>litres</em></div>
+      </button>
+    </div>
+
+    <button class="cta" onclick="runWash()">Confirm and start</button>
+    <button class="cta ghost" onclick="go('home')">Cancel</button>
+   </div>
+  </section>
+
+  <!-- ---- RECEIPT ---- -->
+  <section class="view" id="v-done">
+    <div class="receipt">
+      <div class="drop"></div>
+      <h2>Wash complete</h2>
+      <div class="rline"><span>Cycle</span><span id="rCycle">Water Saver</span></div>
+      <div class="rline"><span>Water used</span><span id="rUsed">32 L</span></div>
+      <div class="rline"><span>A standard cycle would use</span><span id="rStd">45 L</span></div>
+      <div class="rline total"><span id="rSavedLabel">Saved</span><span id="rSaved">13 L</span></div>
+      <div class="rline"><span>Points credited</span><span id="rPts">+13</span></div>
+      <p class="rnote" id="rNote">Your passbook has been updated. Points can be spent on your next visit.</p>
+      <button class="cta" onclick="go('home')">View passbook</button>
+    </div>
+  </section>
+
+  <!-- ---- REWARDS ---- -->
+  <section class="view" id="v-rewards">
+   <div class="wrap">
+    <div class="balance-card" style="max-width:420px">
+      <div class="col">
+        <div class="eyebrow">Points balance</div>
+        <div class="figure" id="ptsBig">312</div>
+        <div class="sub">One point for every litre you save.</div>
+      </div>
+    </div>
+    <div class="tiers">
+      <div class="tier" id="t1">
+        <div class="n">150</div><div class="u">Points</div>
+        <h3>₹40 off a wash</h3><p>Applied at the counter on your next visit.</p>
+        <button onclick="redeem(150,this)">Redeem</button>
+      </div>
+      <div class="tier" id="t2">
+        <div class="n">300</div><div class="u">Points</div>
+        <h3>Free wash &amp; fold</h3><p>Up to 3 kg, any cycle, one per month.</p>
+        <button onclick="redeem(300,this)">Redeem</button>
+      </div>
+      <div class="tier locked" id="t3">
+        <div class="n">750</div><div class="u">Points</div>
+        <h3>Free pickup for a month</h3><p>Doorstep collection within 5 km.</p>
+        <button disabled>Locked</button>
+      </div>
+    </div>
+   </div>
+  </section>
+</div>
+
+<script>
+const BASE={small:30,medium:45,large:60};
+const SOIL={light:.88,normal:1,heavy:1.15};
+const FAB={delicate:.85,cotton:1,mixed:1};
+const SAVER=.72;
+const TITLES={home:'Passbook',wash:'New wash',rewards:'Rewards',done:'Wash complete'};
+
+let sel={load:'medium',fabric:'cotton',soil:'light'};
+let cycle='eco';
+let points=312, monthSaved=84, washes=4, ecoWashes=3;
+
+function go(name){
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('on'));
+  document.getElementById('v-'+name).classList.add('on');
+  document.querySelectorAll('.nav button').forEach(b=>{
+    if(b.dataset.t===name) b.setAttribute('aria-current','page');
+    else b.removeAttribute('aria-current');
+  });
+  document.getElementById('viewTitle').textContent=TITLES[name];
+  if(name==='wash'){cycle='eco';render();}
+  window.scrollTo({top:0});
+}
+
+function pick(btn){
+  const g=btn.dataset.g;
+  document.querySelectorAll('[data-g="'+g+'"]').forEach(b=>b.setAttribute('aria-pressed','false'));
+  btn.setAttribute('aria-pressed','true');
+  sel[g]=btn.dataset.v;
+  render();
+}
+function setCycle(c){cycle=c;render();}
+
+function figures(){
+  const std=Math.round(BASE[sel.load]*SOIL[sel.soil]*FAB[sel.fabric]);
+  const eco=Math.round(std*SAVER);
+  return {std,eco,saved:std-eco};
+}
+
+function render(){
+  const f=figures();
+  document.getElementById('ecoL').innerHTML=f.eco+'<em>litres</em>';
+  document.getElementById('stdL').innerHTML=f.std+'<em>litres</em>';
+  document.getElementById('stdWarn').textContent=
+    'Uses '+f.saved+' L more. Worth it only when clothes need a deeper rinse.';
+  document.getElementById('c-eco').setAttribute('aria-checked',cycle==='eco');
+  document.getElementById('c-std').setAttribute('aria-checked',cycle==='std');
+
+  const map={light:['var(--credit)','Low water need'],
+             normal:['var(--amber)','Medium water need'],
+             heavy:['var(--brick)','High water need']}[sel.soil];
+  const lamp=document.getElementById('lamp'), txt=document.getElementById('lampText');
+  lamp.style.background=map[0]; txt.textContent=map[1]; txt.style.color=map[0];
+}
+
+function runWash(){
+  const f=figures(), chose=cycle==='eco';
+  const used=chose?f.eco:f.std, saved=chose?f.saved:0;
+
+  document.getElementById('rCycle').textContent=chose?'Water Saver':'Standard';
+  document.getElementById('rUsed').textContent=used+' L';
+  document.getElementById('rStd').textContent=f.std+' L';
+  document.getElementById('rSaved').textContent=saved+' L';
+  document.getElementById('rPts').textContent='+'+saved;
+  document.getElementById('rSavedLabel').textContent=chose?'Saved':'Saved nothing this time';
+  document.getElementById('rNote').textContent=chose
+    ?'Your passbook has been updated. Points can be spent on your next visit.'
+    :'No points this time. The Water Saver cycle would have saved '+f.saved+' L on this load.';
+
+  points+=saved; monthSaved+=saved; washes++; if(chose) ecoWashes++;
+
+  const label=sel.load[0].toUpperCase()+sel.load.slice(1)+' load · '+(chose?'Water Saver':'Standard');
+  const row=document.createElement('tr');
+  row.className='fresh';
+  row.innerHTML='<td><div class="part">'+label+'</div><div class="date">Today</div></td>'
+    +'<td>'+used+'</td>'
+    +'<td class="'+(saved?'cr':'zero')+'">'+(saved?'+'+saved:'—')+'</td>'
+    +'<td class="bal">'+monthSaved+'</td>';
+  const body=document.getElementById('ledgerBody');
+  body.insertBefore(row,body.firstChild);
+
+  sync(); go('done');
+}
+
+function sync(){
+  document.getElementById('monthSaved').innerHTML=monthSaved+'<em>L</em>';
+  document.getElementById('ptsInline').textContent=points;
+  document.getElementById('ptsBig').textContent=points;
+  document.getElementById('sWashes').textContent=washes;
+  document.getElementById('sRate').textContent=Math.round(ecoWashes/washes*100)+'%';
+  document.getElementById('cylFill').style.height=Math.min(100,monthSaved/2)+'%';
+  const locked=points<750;
+  document.getElementById('t3').classList.toggle('locked',locked);
+  const b=document.querySelector('#t3 button');
+  b.disabled=locked; b.textContent=locked?'Locked':'Redeem';
+}
+
+function redeem(cost,btn){
+  if(points<cost){btn.textContent='Not enough';setTimeout(()=>btn.textContent='Redeem',1400);return;}
+  points-=cost; sync(); btn.textContent='Redeemed'; btn.disabled=true;
+}
+
+render(); sync();
+</script>
+</body>
+</html>
