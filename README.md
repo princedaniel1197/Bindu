@@ -1,38 +1,130 @@
-# Bindu — Water Passbook
+# BESS Arbitrage Optimiser
 
-A prototype laundry app that makes the water-saving cycle the default and credits customers for every litre they save.
+Computes the profit-maximising charge/discharge schedule for a battery energy storage
+system over one day of 15-minute electricity prices, and the project economics that
+follow from it.
 
-Built as the Prototype stage of a design thinking project on reducing water consumption in laundromats (Group 7).
+Next.js 14 (App Router) · TypeScript · Tailwind · Recharts · GLPK. No database, no auth,
+no server state — everything runs in the browser.
 
-## The concept
+## What it does
 
-Three ideas from our ideation, built into one interface:
+You configure a battery, supply or generate 96 blocks of prices, and the app solves a
+perfect-foresight linear programme for the optimal schedule.
 
-1. **Default reversal.** Water Saver is pre-selected on every wash and resets to it each time. Standard is available, but it has to be chosen deliberately — and the interface states what that choice costs. This requires no new machines, only a settings change.
-2. **Visibility.** Every wash reports the litres it used against what a standard cycle would have used, turning data the machine already records into something the customer can see.
-3. **Water as currency.** The home screen is a passbook. Each wash is a transaction, water saved is credited, and credits accumulate into points redeemable at the counter. This carries over the "managing water like money" analogy from our ideation stage.
+## The optimisation
 
-A traffic-light indicator assesses water need from load size, fabric and soil level, carried over from the staff-facing concept in SCAMPER 2.
+A linear programme over 96 blocks of 0.25 h, solved with [glpk.js](https://github.com/jvail/glpk.js)
+inside a Web Worker so the UI never blocks. Two variables per block: charge `c_t` and
+discharge `d_t`, both grid-side energies in MWh.
 
-## Files
+```
+maximise    Σ_t (d_t − c_t) · price_t
 
-| File | Description |
-|---|---|
-| `index.html` | Desktop layout — sidebar navigation, full statement view |
-| `mobile.html` | Phone layout, shown in a device frame |
+subject to  0 ≤ c_t ≤ P·Δt
+            0 ≤ d_t ≤ P·Δt
+            SOC_t = SOC_0 + Σ_{s≤t} (c_s·η_c − d_s/η_d)
+            SOC_min ≤ SOC_t ≤ SOC_max
+            Σ_t d_t ≤ max_cycles × usable_energy
+            SOC_95 = SOC_0
+```
 
-Both are self-contained. No build step, no dependencies, no framework. Open either file directly in a browser, or deploy the folder as a static site.
+Round-trip efficiency is split as `√RTE` on charge and `√RTE` on discharge, so a full
+round trip returns exactly RTE. The recursive SOC balance is expanded into a running sum,
+making each block's state of charge one linear row over the variables preceding it.
+
+This is a linear programme, not a heuristic. The schedule it returns is provably optimal
+for the prices given.
+
+## Price data
+
+**Generate** — a synthetic "Karnataka-shaped" day: overnight trough, morning ramp
+06:00–09:00, deep midday solar depression 11:00–15:00, sharp evening peak 18:00–22:00.
+The shape is built from monotone cubic (Fritsch–Carlson) interpolation over hand-placed
+anchors, then rescaled so the peak and trough sliders map to the literal maximum and
+minimum. Noise is AR(1) with a seeded PRNG, so a given seed always reproduces the same
+series.
+
+Anything computed from generated prices is labelled **SYNTHETIC** everywhere it appears.
+
+**Upload CSV** — two columns:
+
+```csv
+block,price_rs_per_mwh
+0,2431.50
+1,2388.20
+...
+95,3011.75
+```
+
+Exactly 96 rows. The block index may start at 0 or 1. The parser rejects the file and
+reports every problem with its source row rather than loading partial data.
+
+## Outputs
+
+- **Chart** — price line, SOC area and charge/discharge bars on one 96-block axis.
+  SOC and the bars share a single MWh axis so their magnitudes stay comparable; charge
+  hangs below zero because it is energy bought rather than sold.
+- **Daily** — gross margin, energy cycled, effective cycles, achieved spread, capture rate.
+- **Project** — year-1 revenue with degradation applied, NPV, IRR (bisection), simple and
+  discounted payback, plus a full year-by-year cashflow table.
+- **Sensitivity** — the LP re-solved 16 times across RTE (80/85/90/95%) × max cycles
+  (1.0/1.5/2.0/2.5), with your current configuration marked.
+
+### Capture rate
+
+`achieved spread ÷ theoretical max spread`, where the theoretical maximum moves the same
+energy but ignores SOC coupling and block ordering: it discharges into the dearest blocks
+and charges from the cheapest, still paying the efficiency penalty. It is an upper bound
+no real schedule can beat, so the ratio never exceeds 100%.
+
+## Traceability
+
+Every derived number has a **Show working** toggle that prints its formula, the
+substituted inputs and the assumptions behind it. Turn it on before trusting any figure.
+
+No market data is bundled with this tool. Fields with no sourced default — fixed O&M,
+project life, discount rate — are marked `assumption` in the interface and are yours to
+set. Annual figures repeat one optimised day 365 times, which the app states plainly next
+to them; a single day is not a year.
 
 ## Running locally
 
-Double-click `index.html`, or serve the folder:
-
 ```bash
-python3 -m http.server 8000
+npm install
+npm run dev
 ```
 
-Then open `http://localhost:8000`.
+Then open http://localhost:3000.
 
-## Notes on the numbers
+```bash
+npm run build      # production build
+npm run typecheck  # tsc --noEmit
+```
 
-Water figures are illustrative, calculated as `base litres × soil factor × fabric factor`, with the Water Saver cycle drawing roughly 72% of a standard fill. Base volumes are 30 / 45 / 60 L for small, medium and large loads. Points are credited at one per litre saved.
+## Deploying to Vercel
+
+Import the repository. Vercel detects Next.js automatically:
+
+| Setting | Value |
+|---|---|
+| Framework Preset | Next.js |
+| Root Directory | `./` (repository root) |
+| Build Command | default (`next build`) |
+| Output Directory | default |
+
+The page is statically prerendered and the solver runs entirely client-side, so no
+serverless functions or environment variables are required.
+
+## Layout
+
+```
+app/          route, layout, global styles
+components/   layout primitives, input panels, result panels
+hooks/        config state, price series, debounced solver calls
+lib/          domain logic — battery, metrics, economics, prices, LP model
+workers/      the Web Worker that owns GLPK
+```
+
+`lib/` holds pure functions with no React dependency, which is what makes the LP model
+and the economics independently testable.

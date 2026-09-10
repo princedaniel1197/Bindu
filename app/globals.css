@@ -1,0 +1,74 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    color-scheme: dark;
+  }
+
+  html,
+  body {
+    @apply bg-base text-ink antialiased;
+  }
+
+  body {
+    font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+  }
+
+  /* Numeric readouts must not jitter as values change. */
+  .num {
+    font-variant-numeric: tabular-nums;
+    @apply font-mono;
+  }
+
+  input[type='number']::-webkit-outer-spin-button,
+  input[type='number']::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  input[type='number'] {
+    -moz-appearance: textfield;
+  }
+
+  input[type='range'] {
+    @apply h-1 w-full cursor-pointer appearance-none rounded-full bg-edge;
+  }
+
+  input[type='range']::-webkit-slider-thumb {
+    @apply h-3.5 w-3.5 appearance-none rounded-full bg-ink;
+    border: 2px solid #111621;
+  }
+
+  input[type='range']::-moz-range-thumb {
+    @apply h-3 w-3 rounded-full border-0 bg-ink;
+  }
+
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply rounded-full bg-edge;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-faint;
+  }
+}
+
+@layer components {
+  .hairline {
+    @apply border-edgeSoft;
+  }
+
+  .label-xs {
+    @apply text-2xs font-medium uppercase tracking-[0.09em] text-faint;
+  }
+}
